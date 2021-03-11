@@ -19,23 +19,32 @@ color_select = [
 ]
 rayon = 20
 
+class Cercle:
+    def __init__(self, rayon):
+        self.rayon = rayon
+        self.position_x = random.randint(0 + rayon, 640 - rayon)
+        self.position_y = random.randint(0 + rayon, 480 - rayon)
+        self.color = random.choice(color_select)
+
+    def cercle_draw(self):
+        for i in range(20):
+            arcade.draw_circle_filled(
+                self.position_x,
+                self.position_y,
+                self.rayon,
+                self.color)
+
 
 class MyCame(arcade.Window):
     def __init__(self, width, height, title):
         # call the parent class's init function
         super().__init__(width, height, title)
+        self.mouse_is_pressed = False
 
     def setup(self):
         self.background_color = arcade.color.WHITE
         arcade.start_render()
-        for i in range(20):
-            arcade.draw_circle_filled(
-                random.randint(0 + rayon, 640 - rayon),
-                random.randint(0 + rayon, 480 - rayon),
-                rayon,
-                random.choice(color_select)
-            )
-        arcade.finish_render()
+        Cercle.cercle_random()
 
     def on_draw(self):
         """
@@ -44,19 +53,23 @@ class MyCame(arcade.Window):
         :return:
         """
         arcade.start_render()
-        arcade.finish_render()
+        if self.mouse_is_pressed:
+            Cercle.cercle_random()
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        arcade.start_render()
+        self.mouse_is_pressed = True
         print("click")
-        for i in range(20):
-            arcade.draw_circle_filled(
-                random.randint(0 + rayon, 640 - rayon),
-                random.randint(0 + rayon, 480 - rayon),
-                rayon,
-                random.choice(color_select)
-            )
-        arcade.finish_render()
+        # for i in range(20):
+        #     arcade.draw_circle_filled(
+        #         random.randint(0 + rayon, 640 - rayon),
+        #         random.randint(0 + rayon, 480 - rayon),
+        #         rayon,
+        #         random.choice(color_select)
+        #     )
+
+    def on_mouse_release(self, x: float, y: float, button: int,
+                         modifiers: int):
+        self.mouse_is_pressed = False
 
 #    def on_mouse_release(self, x: float, y: float, button: int,
 #                         modifiers: int):
