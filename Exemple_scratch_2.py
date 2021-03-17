@@ -1,7 +1,7 @@
 import arcade
 import random
-import time
 from dataclasses import dataclass
+import math
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -12,7 +12,7 @@ COLOR_LIST = [
     arcade.color.ORANGE,
     arcade.color.RED,
     arcade.color.PURPLE,
-    arcade.color.BLACK,
+    # arcade.color.BLACK,
     arcade.color.WHITE
 ]
 
@@ -34,18 +34,35 @@ class MyGame(arcade.Window):
         self.liste_cercles = []
 
     def setup(self):
-        for i in range(20):
+        for _ in range(10):
             rayon = random.randint(10, 50)
-            self.liste_cercles.append(Cercle(random.randint(10, 50),
-                                             random.randint(0 + rayon, SCREEN_WIDTH - rayon),
-                                             random.randint(0 + rayon, SCREEN_HEIGHT - rayon),
-                                             random.choice(COLOR_LIST))
-                                      )
+            pos_x = random.randint(0 + rayon, SCREEN_WIDTH - rayon)
+            pos_y = random.randint(0 + rayon, SCREEN_HEIGHT - rayon)
+            color = random.choice(COLOR_LIST)
+            self.liste_cercles.append(Cercle(rayon, pos_x, pos_y, color))
 
     def on_draw(self):
         arcade.start_render()
-        for i in range(len(self.liste_cercles)):
-            self.liste_cercles[i].draw()
+        for cercle in self.liste_cercles:
+            cercle.draw()
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        arcade.MOUSE_BUTTON_LEFT
+        for cercle in range(len(self.liste_cercles)):
+            distance_x = x - self.liste_cercles[cercle].centre_x
+            distance_y = y - self.liste_cercles[cercle].centre_y
+            distance_centre = int(math.sqrt((distance_x * distance_x) + (distance_y * distance_y)))
+
+            if self.liste_cercles[cercle].rayon > distance_centre:
+                if arcade.MOUSE_BUTTON_LEFT == button:
+                    self.liste_cercles.pop(cercle)
+                else:
+                    self.liste_cercles[cercle].color = random.choice(COLOR_LIST)
+
+            # a**2 + b**2 = c**2
+
+
+
 
 
 def main():
