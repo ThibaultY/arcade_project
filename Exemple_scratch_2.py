@@ -12,7 +12,7 @@ COLOR_LIST = [
     arcade.color.ORANGE,
     arcade.color.RED,
     arcade.color.PURPLE,
-    # arcade.color.BLACK,
+    arcade.color.BLACK,
     arcade.color.WHITE
 ]
 
