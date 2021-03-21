@@ -47,22 +47,18 @@ class MyGame(arcade.Window):
             cercle.draw()
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        arcade.MOUSE_BUTTON_LEFT
-        for cercle in range(len(self.liste_cercles)):
-            distance_x = x - self.liste_cercles[cercle].centre_x
-            distance_y = y - self.liste_cercles[cercle].centre_y
-            distance_centre = int(math.sqrt((distance_x * distance_x) + (distance_y * distance_y)))
+        index = 0
+        for cercle in self.liste_cercles:
+            distance_x = x - cercle.centre_x
+            distance_y = y - cercle.centre_y
+            distance_centre = int(math.sqrt((distance_x ** 2) + (distance_y ** 2)))
 
-            if self.liste_cercles[cercle].rayon > distance_centre:
+            if cercle.rayon > distance_centre:
                 if arcade.MOUSE_BUTTON_LEFT == button:
-                    self.liste_cercles.pop(cercle)
+                    self.liste_cercles.pop(index)
                 else:
-                    self.liste_cercles[cercle].color = random.choice(COLOR_LIST)
-
-            # a**2 + b**2 = c**2
-
-
-
+                    cercle.color = random.choice(COLOR_LIST)
+            index += 1
 
 
 def main():
