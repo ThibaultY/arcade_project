@@ -1,87 +1,75 @@
-"""
-Créé par Yohan Thibault
-Ce programme va être un jeux utilisant la libririe Arcade.
-"""
-
 import arcade
 import random
+from dataclasses import dataclass
 
-color_select = [
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+COLOR_LIST = [
     arcade.color.BLUE,
     arcade.color.GREEN,
     arcade.color.YELLOW,
     arcade.color.ORANGE,
     arcade.color.RED,
     arcade.color.PURPLE,
-    arcade.color.WHITE,
     arcade.color.BLACK,
-    arcade.color.GRAY
+    arcade.color.WHITE
 ]
-rayon = 20
 
 
+@dataclass
 class Cercle:
-    def __init__(self, rayon):
-        self.rayon = rayon
-        self.position_x = random.randint(0 + rayon, 640 - rayon)
-        self.position_y = random.randint(0 + rayon, 480 - rayon)
-        self.color = random.choice(color_select)
+    rayon: int
+    centre_x: int
+    centre_y: int
+    color: (int, int, int)
 
-    def cercle_draw(self):
-        for i in range(20):
-            arcade.draw_circle_filled(
-                self.position_x,
-                self.position_y,
-                self.rayon,
-                self.color)
+    def draw(self):
+        arcade.draw_circle_filled(self.centre_x, self.centre_y, self.rayon, self.color)
 
 
-class MyCame(arcade.Window):
-    def __init__(self, width, height, title):
-        # call the parent class's init function
-        super().__init__(width, height, title)
-        self.mouse_is_pressed = False
+class MyGame(arcade.Window):
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Exercice arcade #1")
+        self.liste_cercles = []
 
     def setup(self):
-        self.background_color = arcade.color.WHITE
+        arcade.set_background_color(arcade.color.GRAY_ASPARAGUS)
+        while len(self.liste_cercles) <= 20:
+            rayon = random.randint(10, 50)
+            pos_x = random.randint(0 + rayon, SCREEN_WIDTH - rayon)
+            pos_y = random.randint(0 + rayon, SCREEN_HEIGHT - rayon)
+            color = random.choice(COLOR_LIST)
+            # est dans les deux cercle
+            is_over_lapping = False
+            for cercle in self.liste_cercles:
+                distance_centre = ((pos_x - cercle.centre_x) ** 2) + ((pos_y - cercle.centre_y) ** 2)
+                min_distance = (rayon + cercle.rayon) ** 2
+                if distance_centre < min_distance:  # La distance est bonne pour ne pas over lap :
+                    is_over_lapping = True
+
+            if not is_over_lapping:
+                self.liste_cercles.append(Cercle(rayon, pos_x, pos_y, color))
 
     def on_draw(self):
-        """
-        C'est la métode de Arcade invoque à chaque
-        frame pour afficher les éléments devotre jeux à l'écran.
-        :return:
-        """
         arcade.start_render()
-        if self.mouse_is_pressed:
-            Cercle.cercle_random()
+        for cercle in self.liste_cercles:
+            cercle.draw()
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        self.mouse_is_pressed = True
-        print("click")
-        # for i in range(20):
-        #     arcade.draw_circle_filled(
-        #         random.randint(0 + rayon, 640 - rayon),
-        #         random.randint(0 + rayon, 480 - rayon),
-        #         rayon,
-        #         random.choice(color_select)
-        #     )
+        for cercle in self.liste_cercles:
+            distance_centre = ((x - cercle.centre_x) ** 2) + ((y - cercle.centre_y) ** 2)
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
-        self.mouse_is_pressed = False
-
-#    def on_mouse_release(self, x: float, y: float, button: int,
-#                         modifiers: int):
-#        arcade.start_render()
-#        self.clear()
-#        arcade.finish_render()
+            if cercle.rayon ** 2 > distance_centre:
+                if arcade.MOUSE_BUTTON_LEFT == button:
+                    self.liste_cercles.pop(self.liste_cercles.index(cercle))
+                else:
+                    cercle.color = random.choice(COLOR_LIST)
 
 
 def main():
-    game = MyCame(640, 480, "Drawing Example")
-    game.setup()
+    my_game = MyGame()
+    my_game.setup()
     arcade.run()
 
 
-if __name__ == "__main__":
-    main()
+main()
