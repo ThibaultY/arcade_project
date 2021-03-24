@@ -44,8 +44,6 @@ class MyCame(arcade.Window):
 
     def setup(self):
         self.background_color = arcade.color.WHITE
-        arcade.start_render()
-        Cercle.cercle_random()
 
     def on_draw(self):
         """
