@@ -61,7 +61,7 @@ class MyGame(arcade.Window):
 
             if cercle.rayon ** 2 > distance_centre:
                 if arcade.MOUSE_BUTTON_LEFT == button:
-                    self.liste_cercles.pop(self.liste_cercles.index(cercle))
+                    self.liste_cercles.remove(cercle)
                 else:
                     cercle.color = random.choice(COLOR_LIST)
 
