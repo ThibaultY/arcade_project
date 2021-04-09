@@ -57,7 +57,7 @@ class Cercle:
 
 class MyGame(arcade.Window):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, 'DvD', update_rate=1/120)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, 'DvD')
         self.liste_cercle = []
 
     def setup(self):
