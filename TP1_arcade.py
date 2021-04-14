@@ -9,6 +9,7 @@ from dataclasses import dataclass
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Modèle de départ"
+
 COLOR_LIST = [
     arcade.color.BLUE,
     arcade.color.GREEN,
@@ -16,7 +17,7 @@ COLOR_LIST = [
     arcade.color.ORANGE,
     arcade.color.RED,
     arcade.color.PURPLE,
-    # arcade.color.BLACK,
+    arcade.color.BLACK,
     arcade.color.WHITE
 ]
 
@@ -33,10 +34,10 @@ class Balle:
     @staticmethod
     def create(x, y):
         """
-        Cette métode va permettre de créé un cercle à un endroit précis.
-        :param x:
-        :param y:
-        :return:
+        This methode will create a circle at a precise spot.
+        :param x: center on the x axis
+        :param y: center on the y axis
+        :return: a Ball() type object
         """
         rayon = random.randint(10, 30)
         color = random.choice(COLOR_LIST)
@@ -50,19 +51,22 @@ class Balle:
 
     def update(self):
         """
-        Changes the circle position of the circle before they are drawn.
+        Changes the position of the circle before they are drawn.
         """
         # changing position of the circle
         self.centre_x += self.change_x
         self.centre_y += self.change_y
 
-        # When there are collision with the wall
+        # Check if the circle is in collision with the border
+        # on the right and left border
         if self.centre_x + self.rayon >= SCREEN_WIDTH:
             self.change_x *= -1
             self.centre_x = SCREEN_WIDTH - self.rayon
         elif self.centre_x - self.rayon <= 0:
             self.change_x *= -1
             self.centre_x = 0 + self.rayon
+
+        # on the right and left border
         if self.centre_y + self.rayon >= SCREEN_HEIGHT:
             self.change_y *= -1
             self.centre_y = SCREEN_HEIGHT - self.rayon
@@ -85,35 +89,38 @@ class Rectangle:
     @staticmethod
     def create(x, y):
         """
-        Cette métode va permettre de créé un cercle à un endroit précis.
-        :param x:
-        :param y:
-        :return:
+        This methode will create a rectangle at a precise spot.
+        :param x: center on the x axis
+        :param y: center on the y axis
+        :return: a Rectangle() type object
         """
         couleur = random.choice(COLOR_LIST)
         return Rectangle(x, y, 60, 40, couleur, 0)
 
     def draw(self):
         """
-        Draws the circle.
+        Draws the rectangle.
         """
         arcade.draw_rectangle_filled(self.centre_x, self.centre_y, self.width, self.height, self.couleur, self.angle)
 
     def update(self):
         """
-        Changes the circle position of the circle before they are drawn.
+        Changes the position of the rectangle before they are drawn.
         """
-        # changing position of the circle
+        # changing position of the rectangle
         self.centre_x += self.change_x
         self.centre_y += self.change_y
 
-        # When there are collision with the wall
+        # Check if the rectangle is in collision with the border
+        # on the right and left border
         if self.centre_x + self.width/2 >= SCREEN_WIDTH:
             self.change_x *= -1
             self.centre_x = SCREEN_WIDTH - int(self.width/2)
         elif self.centre_x - self.width/2 <= 0:
             self.change_x *= -1
             self.centre_x = 0 + int(self.width/2)
+
+        # On the top and bottom border
         if self.centre_y + self.height/2 >= SCREEN_HEIGHT:
             self.change_y *= -1
             self.centre_y = SCREEN_HEIGHT - int(self.height/2)
@@ -161,9 +168,12 @@ class MyGame(arcade.Window):
         # Cette commande permet d'effacer l'écran avant de dessiner. Elle va dessiner l'arrière
         # plan selon la couleur spécifié avec la méthode "set_background_color".
         arcade.start_render()
+
+        # Draw the circle
         for balle in self.liste_balles:
             balle.draw()
 
+        # Draw the rectangle
         for rectangle in self.liste_rectangles:
             rectangle.draw()
 
@@ -175,9 +185,11 @@ class MyGame(arcade.Window):
         Paramètre:
             - delta_time : le nombre de milliseconde depuis le dernier update.
         """
+        # Updates the circles
         for balle in self.liste_balles:
             balle.update()
 
+        # Updates the rectangles
         for rectangle in self.liste_rectangles:
             rectangle.update()
 
@@ -189,8 +201,11 @@ class MyGame(arcade.Window):
             - button: le bouton de la souris appuyé
             - key_modifiers: est-ce que l'usager appuie sur "shift" ou "ctrl" ?
         """
+        # Adds a circle when the left button is clicked
         if button == arcade.MOUSE_BUTTON_LEFT:
             self.liste_balles.append(Balle.create(x, y))
+
+        # Adds a rectangle when the left right is clicked
         if button == arcade.MOUSE_BUTTON_RIGHT:
             self.liste_balles.append(Rectangle.create(x, y))
 
