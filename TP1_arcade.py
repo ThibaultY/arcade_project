@@ -35,6 +35,7 @@ class Balle:
     def create(x, y):
         """
         This methode will create a circle at a precise spot.
+        This circle will have a random size and color.
         :param x: center on the x axis
         :param y: center on the y axis
         :return: a Ball() type object
@@ -51,14 +52,15 @@ class Balle:
 
     def update(self):
         """
-        Changes the position of the circle before they are drawn.
+        Changes the position of the circle and make sure
+        that they don't collide with the borders before they are drawn.
         """
         # changing position of the circle
         self.centre_x += self.change_x
         self.centre_y += self.change_y
 
         # Check if the circle is in collision with the border
-        # on the right and left border
+        # On the right or left border
         if self.centre_x + self.rayon >= SCREEN_WIDTH:
             self.change_x *= -1
             self.centre_x = SCREEN_WIDTH - self.rayon
@@ -66,7 +68,7 @@ class Balle:
             self.change_x *= -1
             self.centre_x = 0 + self.rayon
 
-        # on the right and left border
+        # On the top or bottom border
         if self.centre_y + self.rayon >= SCREEN_HEIGHT:
             self.change_y *= -1
             self.centre_y = SCREEN_HEIGHT - self.rayon
@@ -82,7 +84,7 @@ class Rectangle:
     width: int
     height: int
     couleur: (int, int, int)
-    angle: float
+    angle: float = 0
     change_x: int = 3
     change_y: int = 3
 
@@ -94,8 +96,12 @@ class Rectangle:
         :param y: center on the y axis
         :return: a Rectangle() type object
         """
+        width = random.randint(5, 100)
+        height = random.randint(5, 100)
         couleur = random.choice(COLOR_LIST)
-        return Rectangle(x, y, 60, 40, couleur, 0)
+        angle = random.randint(0, 360)
+
+        return Rectangle(x, y, width, height, couleur, angle)
 
     def draw(self):
         """
@@ -105,14 +111,15 @@ class Rectangle:
 
     def update(self):
         """
-        Changes the position of the rectangle before they are drawn.
+        Changes the position of the rectangle and make sure
+        that they don't collide with the borders before they are drawn.
         """
         # changing position of the rectangle
         self.centre_x += self.change_x
         self.centre_y += self.change_y
 
         # Check if the rectangle is in collision with the border
-        # on the right and left border
+        # on the right or left border
         if self.centre_x + self.width/2 >= SCREEN_WIDTH:
             self.change_x *= -1
             self.centre_x = SCREEN_WIDTH - int(self.width/2)
@@ -120,7 +127,7 @@ class Rectangle:
             self.change_x *= -1
             self.centre_x = 0 + int(self.width/2)
 
-        # On the top and bottom border
+        # On the top or bottom border
         if self.centre_y + self.height/2 >= SCREEN_HEIGHT:
             self.change_y *= -1
             self.centre_y = SCREEN_HEIGHT - int(self.height/2)
@@ -142,7 +149,7 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.AMAZON)
 
-        # listes de sprites:
+        # sprites lists :
         self.liste_balles = []
         self.liste_rectangles = []
 
@@ -154,7 +161,7 @@ class MyGame(arcade.Window):
         # C'est ici que vous allez créer vos listes de sprites et vos sprites.
         # C'est aussi ici que vous charger les sons de votre jeu.
 
-        # Ajout des cercles de base.
+        # default balls and rectangles
         for _ in range(1):
             self.liste_balles.append(Balle.create(200, 200))
             self.liste_rectangles.append(Rectangle.create(100, 100))
@@ -169,11 +176,11 @@ class MyGame(arcade.Window):
         # plan selon la couleur spécifié avec la méthode "set_background_color".
         arcade.start_render()
 
-        # Draw the circle
+        # Draw the circles
         for balle in self.liste_balles:
             balle.draw()
 
-        # Draw the rectangle
+        # Draw the rectangles
         for rectangle in self.liste_rectangles:
             rectangle.draw()
 
